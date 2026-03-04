@@ -4,9 +4,10 @@ package com.example.simplysave.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "expense",
+@Entity(tableName = "expense", indices = [Index("categoryID")],
     foreignKeys = [
         ForeignKey(
                 entity = Category::class,

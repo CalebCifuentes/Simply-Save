@@ -10,24 +10,18 @@ import androidx.room.Update
 interface CategoryDAO {
 
     @Insert
-    fun addCategory(vararg category: Category)
+    suspend fun addCategory(vararg category: Category)
 
     @Delete
-    fun deleteCategory(category: Category)
+    suspend fun deleteCategory(category: Category)
 
     @Update
-    fun updateCategory(category: Category)
+    suspend fun updateCategory(category: Category)
 
-/*
-may be over specifying
-    @Query("UPDATE category set category_name = :name" +
-            " WHERE categoryID = :id")
-    fun updateCategoryName(name:String, id:Int)
+    @Query("SELECT * FROM category")
+    suspend fun getAllCategories() : List<Category>
 
+    @Query("SELECT * FROM category where categoryID = :id")
+    suspend fun getCategoryByID(id: Int): Category?
 
-    @Query("UPDATE category set budget_amount = :amount" +
-    " WHERE categoryID = :id")
-    fun updateCategoryBudgetAmount(amount:Double, id:Int)
-
- */
 }
