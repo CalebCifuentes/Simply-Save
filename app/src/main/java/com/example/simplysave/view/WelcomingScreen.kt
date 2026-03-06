@@ -54,109 +54,110 @@ import kotlinx.coroutines.flow.Flow
 val SSGreen = Color(0xFF006B5F)
 
 
-    @Composable
-    fun WelcomingScreen(onGetStarted:(name:String, budget:Double) -> Unit) {
+@Composable
+fun WelcomingScreen(onGetStarted:(name:String, budget:Double, spent: Double) -> Unit) {
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
 
-                Text(
-                    text = "SIMPLY SAVE",
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = SSGreen
-                )
-
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-                Text(
-                    text = "Welcome! Please fill out the \ncategory to get Started :)",
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center
-                )
+        Text(
+            text = "SIMPLY SAVE",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            color = SSGreen
+        )
 
 
-            Spacer(modifier = Modifier.height(32.dp))
-            IntroCategoryCard(onSave = onGetStarted)
-        }
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Welcome! Please fill out the \ncategory to get Started :)",
+            fontSize = 18.sp,
+            textAlign = TextAlign.Center
+        )
+
+
+        Spacer(modifier = Modifier.height(32.dp))
+        IntroCategoryCard(onSave = onGetStarted)
     }
+}
 
-    @Composable
-    fun IntroCategoryCard(onSave: (name: String, budget:Double) -> Unit) {
-        var categoryName by remember { mutableStateOf("") }
-        var budgetAmount by remember { mutableStateOf("")}
-        //var amountSpent by remember {mutableStateOf("")}
+@Composable
+fun IntroCategoryCard(onSave: (name: String, budget:Double, spent:Double) -> Unit) {
+    var categoryName by remember { mutableStateOf("") }
+    var budgetAmount by remember { mutableStateOf("")}
+    var spentAmount by remember { mutableStateOf("")}
 
 
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(4.dp),
-            colors = CardDefaults.cardColors(containerColor = White)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)){
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(4.dp),
+        colors = CardDefaults.cardColors(containerColor = White)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)){
 
+            OutlinedTextField(
+                value = categoryName,
+                onValueChange = {categoryName = it},
+                label = {Text("Category Name")},
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Budget:", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                 OutlinedTextField(
-                    value = categoryName,
-                    onValueChange = {categoryName = it},
-                    label = {Text("Category Name")},
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    value = budgetAmount,
+                    onValueChange = {budgetAmount = it},
+                    placeholder = {Text("$0.00")},
+                    modifier = Modifier.width(130.dp),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+            }
+            Spacer(modifier = Modifier.height(8.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text("Budget:", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
-                    OutlinedTextField(
-                        value = budgetAmount,
-                        onValueChange = {budgetAmount = it},
-                        placeholder = {Text("$0.00")},
-                        modifier = Modifier.width(130.dp),
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Amount Spent:", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                OutlinedTextField(
+                    value = spentAmount,
+                    onValueChange = {spentAmount = it},
+                    //enabled = false,
+                    placeholder = {Text("$0.00")},
+                    modifier = Modifier.width(130.dp),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text("Amount Spent:", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
-                    OutlinedTextField(
-                        value = "$0.00",
-                        onValueChange = {},
-                        enabled = false,
-                        modifier = Modifier.width(130.dp),
-                        singleLine = true
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(
-                    onClick = {
-                        val budget = budgetAmount.replace("$", "").toDoubleOrNull() ?:0.0
-                        if(categoryName.isNotBlank()){
-                            onSave(categoryName, budget)
-                        }
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = SSGreen),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                ){
-                    Text("Save", color = White)
-                }
+            Button(
+                onClick = {
+                    val budget = budgetAmount.replace("$", "").toDoubleOrNull() ?:0.0
+                    val spent = spentAmount.replace("$", "").toDoubleOrNull() ?:0.0
+                    if(categoryName.isNotBlank()){
+                        onSave(categoryName, budget, spent)
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = SSGreen),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ){
+                Text("Save", color = White)
             }
         }
     }
-
-
+}

@@ -1,5 +1,7 @@
 package com.example.simplysave.model
 
+import kotlinx.coroutines.flow.Flow
+
 class CategoryAndExpenseRepository(private val catDao: CategoryDAO, private val expDao: ExpenseDAO){
 
 
@@ -7,20 +9,20 @@ suspend fun deleteCategory(category: Category) {
     catDao.deleteCategory(category)
 }
 
-suspend fun addCategory(vararg category:Category){
-    catDao.addCategory(*category)
+suspend fun addCategory( category:Category): Long{
+    return catDao.addCategory(category)
 }
 
 suspend fun updateCategory(category: Category){
     catDao.updateCategory(category)
 }
 
-suspend fun getAllCategories():List<Category>{
+ fun getAllCategories():Flow<List<Category>>{
     return catDao.getAllCategories()
 }
 
-suspend fun getCategoryByID(id: Int): Category?{
-      return catDao.getCategoryByID(id)
+suspend fun getCategoryByID(catID: Int): Category?{
+      return catDao.getCategoryByID(catID)
 }
 
 suspend fun deleteExpense(expense: Expense){
@@ -35,11 +37,11 @@ suspend fun updateExpense(expense: Expense){
     expDao.updateExpense(expense)
 }
 
-suspend fun getExpenseByCategory(catID: Int): List<Expense>{
+ fun getExpenseByCategory(catID: Int): Flow<List<Expense>>{
     return expDao.getExpenseByCategory(catID)
 }
 
-suspend fun getExpenseByID(id: Int): Expense?{
-    return expDao.getExpenseByID(id)
+suspend fun getExpenseByID(expenseID: Int): Expense?{
+    return expDao.getExpenseByID(expenseID)
     }
 }

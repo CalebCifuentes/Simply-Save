@@ -9,5 +9,6 @@ import androidx.room.PrimaryKey
 data class Category(
     @PrimaryKey(autoGenerate = true) val categoryID: Int = 0,
     @ColumnInfo(name = "category_name") val categoryName: String,
-    @ColumnInfo(name = "budget_amount") val budgetAmount: Double
+    @ColumnInfo(name = "budget_amount") val budgetAmount: Double,
+    @ColumnInfo(name="spent_amount") val spentAmount: Double
 )

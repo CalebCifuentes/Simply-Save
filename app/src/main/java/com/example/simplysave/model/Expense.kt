@@ -22,6 +22,6 @@ data class Expense(
     @PrimaryKey(autoGenerate = true) val expenseID: Int = 0,
     @ColumnInfo("amount_spent") val amountSpent: Double,
     @ColumnInfo("categoryID") val categoryID: Int,
-    @ColumnInfo("description") val description: String,
-    @ColumnInfo("expense_date") val expenseDate: Long
+    @ColumnInfo("description") val description: String?,
+    @ColumnInfo("expense_date") val expenseDate: Long?
 )

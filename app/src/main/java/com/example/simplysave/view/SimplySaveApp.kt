@@ -13,14 +13,14 @@ fun SimplySaveApp(viewModel: CategoryAndExpenseViewModel) {
 
     if (!hasCompletedWelcome && categories.isEmpty()) {
         WelcomingScreen(
-            onGetStarted = { name, budget ->
-                viewModel.createCategory(
-                    com.example.simplysave.model.Category(
-                        categoryName = name,
-                        budgetAmount = budget
-                    )
-                )
+            onGetStarted = { name, budget, spent ->
+                viewModel.createCategoryAndExpense(
 
+                        categoryName = name,
+                        budgetAmount = budget,
+                        spentAmount = spent
+
+                    )
             }
         )
     } else {

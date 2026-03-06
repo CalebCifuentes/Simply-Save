@@ -57,18 +57,19 @@ fun CategoryListScreen(viewModel: CategoryAndExpenseViewModel) {
                     AddCategoryCard(
                         initialName = category.categoryName,
                         initialBudget = category.budgetAmount.toString(),
-                        onSave = { name, budget, _->
+                        initialAmountSpent = category.spentAmount.toString(),
+                        onSave = { name, budget,spent ->
                             viewModel.updateCategory(
                                 category.copy(
                                     categoryName = name,
-                                    budgetAmount = budget
+                                    budgetAmount = budget,
+                                    spentAmount = spent
                                 )
                             )
                             editingCategoryId = null
                         }
                     )
                 } else {
-                    // Read-only display card with edit/delete actions
                     CategoryDisplayCard(
                         category = category,
                         onEdit = { editingCategoryId = category.categoryID },
@@ -77,13 +78,13 @@ fun CategoryListScreen(viewModel: CategoryAndExpenseViewModel) {
                 }
             }
 
-            // New empty card when "+" is tapped
+           // should be able to add another card
             if (showAddCard) {
                 item {
                     AddCategoryCard(
                         onSave = { name, budget, spent ->
                             viewModel.createCategory(
-                                Category(categoryName = name, budgetAmount = budget)
+                                Category(categoryName = name, budgetAmount = budget, spentAmount = spent)
                             )
                             showAddCard = false
                         }
@@ -146,7 +147,7 @@ fun CategoryDisplayCard(
             ) {
                 Text("Amount Spent:", fontWeight = FontWeight.SemiBold)
                 // Amount spent is tracked via expenses — show $0.00 as default
-                Text("\$0.00")
+                Text("$${String.format("%.2f", category.spentAmount)}")
             }
 
             Spacer(modifier = Modifier.height(12.dp))

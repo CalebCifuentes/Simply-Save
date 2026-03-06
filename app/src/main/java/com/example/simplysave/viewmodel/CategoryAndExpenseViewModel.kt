@@ -85,12 +85,13 @@ class CategoryAndExpenseViewModel(
         }
     }
 
-    fun createCategoryAndExpense(categoryName: String, budgetAmount: Double){
+    fun createCategoryAndExpense(categoryName: String, budgetAmount: Double, spentAmount: Double){
         viewModelScope.launch {
            val newCategoryID = categoryAndExpenseRepository.addCategory(
                Category(
                    categoryName = categoryName,
-                   budgetAmount = budgetAmount
+                   budgetAmount = budgetAmount,
+                   spentAmount = spentAmount
                )
            )
 
