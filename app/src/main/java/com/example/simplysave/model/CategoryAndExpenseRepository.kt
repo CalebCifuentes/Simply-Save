@@ -29,7 +29,7 @@ suspend fun upsertMonthlyIncome(userSettings: UserSettings){
      userSet.upsertMonthlyIncome(userSettings)
 }
 
- fun fetchMonthlyIncome(): Flow<List<UserSettings>>{
+ fun fetchMonthlyIncome(): Flow<List<UserSettings?>>{
      return userSet.fetchMonthlyIncome()
 }
 

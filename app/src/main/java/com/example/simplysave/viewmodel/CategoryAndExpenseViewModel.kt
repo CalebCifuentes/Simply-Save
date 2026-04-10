@@ -22,6 +22,9 @@ class CategoryAndExpenseViewModel(
     val monthlyIncome :StateFlow<UserSettings?> = _monthlyIncome
     private val _expenses = MutableStateFlow<List<Expense>>(emptyList())
     val expenses: StateFlow<List<Expense>> = _expenses
+
+    private var _isReady = MutableStateFlow(false)
+    val isReady: StateFlow<Boolean> = _isReady
     init {
       viewModelScope.launch {
           categoryAndExpenseRepository.getAllCategories()
@@ -30,7 +33,9 @@ class CategoryAndExpenseViewModel(
 
         viewModelScope.launch{
             categoryAndExpenseRepository.fetchMonthlyIncome()
-                .collect { list -> _monthlyIncome.value = list.firstOrNull() }
+                .collect { _monthlyIncome.value = it.firstOrNull()
+                    _isReady.value = true
+                }
         }
     }
 

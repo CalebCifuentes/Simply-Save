@@ -35,7 +35,7 @@ import com.example.simplysave.view.SimplySaveApp
                      context.applicationContext,
                      SimplySaveDatabase::class.java,
                      "simplysave_database"
-                 ).fallbackToDestructiveMigration(false)
+                 ).fallbackToDestructiveMigration(true)
                      .build()
                  INSTANCE = instance
                  instance

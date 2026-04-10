@@ -1,6 +1,11 @@
 package com.example.simplysave.view
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import com.example.simplysave.viewmodel.CategoryAndExpenseViewModel
 
 
@@ -11,12 +16,29 @@ fun SimplySaveApp(viewModel: CategoryAndExpenseViewModel) {
 
     // Show welcome screen only when there are no categories yet
     var hasCompletedWelcome by remember { mutableStateOf(false) }
+    //Show screen when no monthly income has been set
+    val isReady by viewModel.isReady.collectAsState()
 
-    if (!hasCompletedWelcome && categories.isEmpty()) {
+    if(!isReady) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = SSGreen)
+        }
+    }else{
+            android.util.Log.d(
+                "SimplySaveApp",
+                "isReady=$isReady, monthlyIncome=$monthlyIncome, categories=${categories.size}"
+            )
+    }
+     if(monthlyIncome == null){
+        firstTimeEnteringIncomeScreen (
+            onSaveIncome = {income -> viewModel.saveMonthlyIncome(income)}
+        )
+    }
+    else if (categories.isEmpty()) {
         WelcomingScreen(
-            onSaveIncome = {income ->
-                viewModel.saveMonthlyIncome(income)
-            },
             onGetStarted = { name, budget, spent ->
                 viewModel.createCategoryAndExpense(
 

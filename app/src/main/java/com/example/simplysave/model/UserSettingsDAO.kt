@@ -15,7 +15,7 @@ interface UserSettingsDAO {
     suspend fun upsertMonthlyIncome(userSettings: UserSettings)
 
     @Query("Select * FROM UserSettings WHERE id = 1")
-    fun fetchMonthlyIncome(): Flow<List<UserSettings>>
+    fun fetchMonthlyIncome(): Flow<List<UserSettings?>>
 
 
 }

@@ -52,9 +52,8 @@ import kotlinx.coroutines.flow.Flow
 
 val SSGreen = Color(0xFF006B5F)
 
-
 @Composable
-fun WelcomingScreen(onSaveIncome:(income:Double) -> Unit, onGetStarted:(name:String, budget:Double, spent: Double) -> Unit) {
+fun firstTimeEnteringIncomeScreen(onSaveIncome: (income: Double) -> Unit){
 
     Column(
         modifier = Modifier
@@ -63,7 +62,35 @@ fun WelcomingScreen(onSaveIncome:(income:Double) -> Unit, onGetStarted:(name:Str
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Text(
+            text = "SIMPLY SAVE",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            color = SSGreen
+        )
 
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Enter your monthly income to get started :)",
+            fontSize = 18.sp,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        IntroMonthlyIncome(setIncome = onSaveIncome)
+    }
+}
+@Composable
+fun WelcomingScreen(/*onSaveIncome:(income:Double) -> Unit,*/ onGetStarted:(name:String, budget:Double, spent: Double) -> Unit) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+/*
         Text(
             text = "SIMPLY SAVE",
             fontSize = 28.sp,
@@ -80,9 +107,10 @@ fun WelcomingScreen(onSaveIncome:(income:Double) -> Unit, onGetStarted:(name:Str
             textAlign = TextAlign.Center
         )
 
+ */
+
 
         Spacer(modifier = Modifier.height(32.dp))
-        IntroMonthlyIncome(setIncome = onSaveIncome )
         IntroCategoryCard(onSave = onGetStarted)
     }
 }
@@ -94,7 +122,7 @@ fun IntroMonthlyIncome(setIncome: (income: Double) -> Unit){
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(containerColor = White)
-    ){
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
 
             OutlinedTextField(
@@ -103,22 +131,23 @@ fun IntroMonthlyIncome(setIncome: (income: Double) -> Unit){
                 label = { Text("Monthly Income") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                placeholder = {Text("$0.00")},
+                placeholder = { Text("$0.00") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-
             )
-        }
-        Button(
-            onClick = {
-                val income = monthlyIncome.replace("$", "").toDoubleOrNull() ?: 0.0
-                if (monthlyIncome.isNotBlank()) {
-                    setIncome(income)
-                }
-            },
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = {
+                    val income = monthlyIncome.replace("$", "").toDoubleOrNull() ?: 0.0
+                    if (monthlyIncome.isNotBlank() && income > 0) {
+                        setIncome(income)
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = SSGreen),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text("Save", color = White)
+            ) {
+                Text("Save", color = White)
+            }
         }
     }
 }
