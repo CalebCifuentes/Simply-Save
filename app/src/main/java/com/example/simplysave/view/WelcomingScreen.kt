@@ -35,8 +35,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.BlendMode.Companion.Color
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.font.FontWeight
@@ -45,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.simplysave.model.CategoryAndExpenseRepository
 import com.example.simplysave.viewmodel.CategoryAndExpenseViewModel
 import kotlinx.coroutines.delay
@@ -55,7 +54,7 @@ val SSGreen = Color(0xFF006B5F)
 
 
 @Composable
-fun WelcomingScreen(onGetStarted:(name:String, budget:Double, spent: Double) -> Unit) {
+fun WelcomingScreen(onSaveIncome:(income:Double) -> Unit, onGetStarted:(name:String, budget:Double, spent: Double) -> Unit) {
 
     Column(
         modifier = Modifier
@@ -83,10 +82,46 @@ fun WelcomingScreen(onGetStarted:(name:String, budget:Double, spent: Double) -> 
 
 
         Spacer(modifier = Modifier.height(32.dp))
+        IntroMonthlyIncome(setIncome = onSaveIncome )
         IntroCategoryCard(onSave = onGetStarted)
     }
 }
 
+@Composable
+fun IntroMonthlyIncome(setIncome: (income: Double) -> Unit){
+    var monthlyIncome by remember { mutableStateOf("") }
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(4.dp),
+        colors = CardDefaults.cardColors(containerColor = White)
+    ){
+        Column(modifier = Modifier.padding(16.dp)) {
+
+            OutlinedTextField(
+                value = monthlyIncome,
+                onValueChange = { monthlyIncome = it },
+                label = { Text("Monthly Income") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                placeholder = {Text("$0.00")},
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+
+            )
+        }
+        Button(
+            onClick = {
+                val income = monthlyIncome.replace("$", "").toDoubleOrNull() ?: 0.0
+                if (monthlyIncome.isNotBlank()) {
+                    setIncome(income)
+                }
+            },
+                colors = ButtonDefaults.buttonColors(containerColor = SSGreen),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text("Save", color = White)
+        }
+    }
+}
 @Composable
 fun IntroCategoryCard(onSave: (name: String, budget:Double, spent:Double) -> Unit) {
     var categoryName by remember { mutableStateOf("") }
