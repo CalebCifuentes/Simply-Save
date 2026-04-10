@@ -11,37 +11,42 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModelProvider
+import androidx.room.Room
+import com.example.simplysave.model.CategoryAndExpenseRepository
+import com.example.simplysave.model.CategoryDAO
+import com.example.simplysave.model.SimplySaveDatabase
 import com.example.simplysave.ui.theme.SimplySaveTheme
+import com.example.simplysave.view.SimplySaveApp
+import com.example.simplysave.view.WelcomingScreen
+import com.example.simplysave.viewmodel.CategoryAndExpenseViewModel
+import com.example.simplysave.viewmodel.CategoryAndExpenseViewModelFactory
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val db = SimplySaveDatabase.getDatabase(applicationContext)
+        val repository = CategoryAndExpenseRepository(db.categoryDao(),db.expenseDao())
+        val viewModel: CategoryAndExpenseViewModel by lazy{
+            ViewModelProvider(
+                this,
+
+                CategoryAndExpenseViewModelFactory(repository)
+            ) [CategoryAndExpenseViewModel::class.java]
+        }
         setContent {
             SimplySaveTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                //Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                  //  Greeting(
+                        //name = "Android",
+                       // modifier = Modifier.padding(innerPadding)
+                    //)
+                SimplySaveApp(viewModel = viewModel)
+
                 }
             }
         }
     }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SimplySaveTheme {
-        Greeting("Android")
-    }
-}

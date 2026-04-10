@@ -1,5 +1,6 @@
 package com.example.simplysave.view
 
+import android.R.attr.text
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.simplysave.model.Category
+import kotlin.concurrent.timer
 import com.example.simplysave.viewmodel.CategoryAndExpenseViewModel
 
 @Composable
@@ -27,24 +29,27 @@ fun CategoryListScreen(viewModel: CategoryAndExpenseViewModel) {
     var editingCategoryId by remember { mutableStateOf<Int?>(null) }
     // Whether to show an empty "add new" card
     var showAddCard by remember { mutableStateOf(false) }
-
+    // For header that will appear and then go away
+    var isVisible by remember { mutableStateOf(true) }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
 
-        // Header message after first save
-        if (categories.isNotEmpty()) {
-            Text(
-                text = "Sweet! Now you can edit\nor make another category",
-                fontSize = 18.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-            )
-        }
+
+     if(isVisible){
+         Text(text = "Sweet! Now you can edit\n or make another category",
+             fontSize = 18.sp,
+             textAlign = TextAlign.Center,
+             modifier = Modifier
+                 .fillMaxWidth()
+                 .padding(bottom = 16.dp)
+         )
+         timer(name = "background-timer", initialDelay = 3000, period = 3000) {
+            isVisible = false;
+         }
+     }
 
         // List of saved categories
         LazyColumn(
@@ -54,7 +59,7 @@ fun CategoryListScreen(viewModel: CategoryAndExpenseViewModel) {
             items(categories) { category ->
                 if (editingCategoryId == category.categoryID) {
                     // Editable card
-                    AddCategoryCard(
+                    CategoryCard(
                         initialName = category.categoryName,
                         initialBudget = category.budgetAmount.toString(),
                         initialAmountSpent = category.spentAmount.toString(),
@@ -66,8 +71,10 @@ fun CategoryListScreen(viewModel: CategoryAndExpenseViewModel) {
                                     spentAmount = spent
                                 )
                             )
-                            editingCategoryId = null
-                        }
+                                // exits editing mode
+                                editingCategoryId = null
+                        },
+                        onCancel = {editingCategoryId = null}
                     )
                 } else {
                     CategoryDisplayCard(
@@ -78,16 +85,17 @@ fun CategoryListScreen(viewModel: CategoryAndExpenseViewModel) {
                 }
             }
 
-           // should be able to add another card
+           // should be able to add another card or cancel
             if (showAddCard) {
                 item {
-                    AddCategoryCard(
+                    CategoryCard(
                         onSave = { name, budget, spent ->
                             viewModel.createCategory(
                                 Category(categoryName = name, budgetAmount = budget, spentAmount = spent)
                             )
                             showAddCard = false
-                        }
+                        },
+                        onCancel = {showAddCard = false}
                     )
                 }
             }

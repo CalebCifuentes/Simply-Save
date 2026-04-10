@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.simplysave.view.SimplySaveApp
 
 
 /*
@@ -13,12 +14,11 @@ import androidx.room.RoomDatabase
   Makes sure that only one instance of the DB is used in app
 */
 
-@Database(entities = [Category::class, Expense::class], version = 1)
+@Database(entities = [Category::class, Expense::class], version = 2)
  abstract class SimplySaveDatabase : RoomDatabase(){
 
      abstract fun  categoryDao(): CategoryDAO
      abstract fun expenseDao(): ExpenseDAO
-
 
      companion object{
          // INSTANCE marked with Volatile annotation so that it is up to-date
@@ -32,7 +32,8 @@ import androidx.room.RoomDatabase
                      context.applicationContext,
                      SimplySaveDatabase::class.java,
                      "simplysave_database"
-                 ).build()
+                 ).fallbackToDestructiveMigration(false)
+                     .build()
                  INSTANCE = instance
                  instance
              }
