@@ -2,7 +2,7 @@ package com.example.simplysave.model
 
 import kotlinx.coroutines.flow.Flow
 
-class CategoryAndExpenseRepository(private val catDao: CategoryDAO, private val expDao: ExpenseDAO){
+class CategoryAndExpenseRepository(private val catDao: CategoryDAO, private val expDao: ExpenseDAO, private val userSet: UserSettingsDAO){
 
 
 suspend fun deleteCategory(category: Category) {
@@ -23,6 +23,14 @@ suspend fun updateCategory(category: Category){
 
 suspend fun getCategoryByID(catID: Int): Category?{
       return catDao.getCategoryByID(catID)
+}
+
+suspend fun upsertMonthlyIncome(userSettings: UserSettings){
+     userSet.upsertMonthlyIncome(userSettings)
+}
+
+ fun fetchMonthlyIncome(): Flow<List<UserSettings>>{
+     return userSet.fetchMonthlyIncome()
 }
 
 suspend fun deleteExpense(expense: Expense){

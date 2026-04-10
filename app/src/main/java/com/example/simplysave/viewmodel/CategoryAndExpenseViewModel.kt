@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.simplysave.model.Category
 import com.example.simplysave.model.CategoryAndExpenseRepository
 import com.example.simplysave.model.Expense
+import com.example.simplysave.model.UserSettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -16,6 +17,9 @@ class CategoryAndExpenseViewModel(
     private val _categories = MutableStateFlow<List<Category>>(emptyList())
     val categories: StateFlow<List<Category>> = _categories
 
+
+    private val _monthlyIncome = MutableStateFlow<UserSettings?>(null)
+    val monthlyIncome :StateFlow<UserSettings?> = _monthlyIncome
     private val _expenses = MutableStateFlow<List<Expense>>(emptyList())
     val expenses: StateFlow<List<Expense>> = _expenses
     init {
@@ -23,6 +27,11 @@ class CategoryAndExpenseViewModel(
           categoryAndExpenseRepository.getAllCategories()
               .collect { _categories.value = it }
       }
+
+        viewModelScope.launch{
+            categoryAndExpenseRepository.fetchMonthlyIncome()
+                .collect { list -> _monthlyIncome.value = list.firstOrNull() }
+        }
     }
 
  fun deleteCategory(category:Category) {
@@ -51,6 +60,9 @@ class CategoryAndExpenseViewModel(
         }
     }
 
+    fun saveMonthlyIncome(income: Double){
+        viewModelScope.launch {  categoryAndExpenseRepository.upsertMonthlyIncome(UserSettings(id=1, monthlyIncome = income)) }
+    }
 
     fun deleteExpense(expense: Expense) {
         viewModelScope.launch {

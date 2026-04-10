@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val db = SimplySaveDatabase.getDatabase(applicationContext)
-        val repository = CategoryAndExpenseRepository(db.categoryDao(),db.expenseDao())
+        val repository = CategoryAndExpenseRepository(db.categoryDao(),db.expenseDao(), db.userSetDao())
         val viewModel: CategoryAndExpenseViewModel by lazy{
             ViewModelProvider(
                 this,
@@ -39,11 +39,6 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             SimplySaveTheme {
-                //Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                  //  Greeting(
-                        //name = "Android",
-                       // modifier = Modifier.padding(innerPadding)
-                    //)
                 SimplySaveApp(viewModel = viewModel)
 
                 }

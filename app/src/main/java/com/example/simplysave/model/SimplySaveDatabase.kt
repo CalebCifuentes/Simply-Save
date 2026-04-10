@@ -14,11 +14,14 @@ import com.example.simplysave.view.SimplySaveApp
   Makes sure that only one instance of the DB is used in app
 */
 
-@Database(entities = [Category::class, Expense::class], version = 2)
+@Database(entities = [Category::class, Expense::class, UserSettings::class], version = 3)
  abstract class SimplySaveDatabase : RoomDatabase(){
 
      abstract fun  categoryDao(): CategoryDAO
      abstract fun expenseDao(): ExpenseDAO
+     abstract fun userSetDao(): UserSettingsDAO
+
+
 
      companion object{
          // INSTANCE marked with Volatile annotation so that it is up to-date
