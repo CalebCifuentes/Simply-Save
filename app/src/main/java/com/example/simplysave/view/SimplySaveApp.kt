@@ -26,13 +26,7 @@ fun SimplySaveApp(viewModel: CategoryAndExpenseViewModel) {
         ) {
             CircularProgressIndicator(color = SSGreen)
         }
-    }else{
-            android.util.Log.d(
-                "SimplySaveApp",
-                "isReady=$isReady, monthlyIncome=$monthlyIncome, categories=${categories.size}"
-            )
-    }
-     if(monthlyIncome == null){
+    } else if(monthlyIncome == null){
         firstTimeEnteringIncomeScreen (
             onSaveIncome = {income -> viewModel.saveMonthlyIncome(income)}
         )
